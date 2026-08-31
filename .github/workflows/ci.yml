@@ -1,0 +1,94 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - "chore/**"
+      - "feature/**"
+      - "fix/**"
+      - testy
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  node-collectors:
+    name: Node collectors
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      matrix:
+        component:
+          - 01-baseline-collector
+          - 02-dense-reference-recorder
+          - 04-adaptive-collector
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: ${{ matrix.component }}/package-lock.json
+      - name: Install dependencies
+        working-directory: ${{ matrix.component }}
+        run: npm ci
+      - name: Test / check
+        working-directory: ${{ matrix.component }}
+        shell: bash
+        run: |
+          if npm run | grep -q " test"; then npm test; fi
+          npm run check
+      - name: Dependency audit
+        working-directory: ${{ matrix.component }}
+        run: npm audit --audit-level=high
+
+  adaptive-research:
+    name: Adaptive research tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: 03-adaptive-sampling-research/research/requirements.lock.txt
+      - run: python -m pip install -r 03-adaptive-sampling-research/research/requirements.lock.txt
+      - name: Unit tests
+        working-directory: 03-adaptive-sampling-research/research
+        run: python -m unittest discover -s tests -v
+
+  ml-research:
+    name: ML research tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: 05-ml-research-engine/requirements.lock.txt
+      - run: python -m pip install -r 05-ml-research-engine/requirements.lock.txt
+      - name: Unit tests
+        working-directory: 05-ml-research-engine
+        run: python -m unittest discover -s tests -v
+      - name: Synthetic streaming smoke
+        working-directory: 05-ml-research-engine
+        run: python smoke_streaming.py
+
+  repository-contracts:
+    name: Published result contracts
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - run: python scripts/verify_published_results.py
+      - run: python scripts/repository_sanity.py

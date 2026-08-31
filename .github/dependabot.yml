@@ -1,0 +1,26 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /01-baseline-collector
+    schedule:
+      interval: weekly
+  - package-ecosystem: npm
+    directory: /02-dense-reference-recorder
+    schedule:
+      interval: weekly
+  - package-ecosystem: npm
+    directory: /04-adaptive-collector
+    schedule:
+      interval: weekly
+  - package-ecosystem: pip
+    directory: /03-adaptive-sampling-research/research
+    schedule:
+      interval: weekly
+  - package-ecosystem: pip
+    directory: /05-ml-research-engine
+    schedule:
+      interval: weekly
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly

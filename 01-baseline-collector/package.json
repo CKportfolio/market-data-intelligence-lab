@@ -1,0 +1,20 @@
+{
+  "name": "market-ml-collector",
+  "version": "1.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Bybit BTC raw market-data collector + local REST enrichment for ML research",
+  "engines": {
+    "node": ">=18.18"
+  },
+  "scripts": {
+    "start": "node collector.mjs",
+    "enrich": "node enrich.mjs",
+    "validate": "node validate.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "check": "node --check collector.mjs && node --check enrich.mjs && node --check validate.mjs"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  }
+}

@@ -1,0 +1,14 @@
+PIERWSZY START (jedna linia, z glownego katalogu programu):
+py -3 -m venv .venv && .venv\Scripts\python.exe -m pip install --upgrade pip && .venv\Scripts\python.exe -m pip install -r requirements.txt && .venv\Scripts\python.exe main.py
+
+KOLEJNE STARTY:
+.venv\Scripts\python.exe main.py
+
+ZE WSKAZANYM FOLDEREM RAW, BEZ PYTANIA O SCIEZKE:
+.venv\Scripts\python.exe main.py --input "D:\marketdata\data\raw"
+
+POBIERANIE WYLACZONE, UZYJ TYLKO ISTNIEJACEGO CACHE REST:
+.venv\Scripts\python.exe main.py --input "D:\marketdata\data\raw" --offline
+
+TESTY:
+.venv\Scripts\python.exe -m unittest discover -s tests -v

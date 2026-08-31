@@ -1,0 +1,14 @@
+{
+  "name": "adaptive-ob-dense-recorder",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "start": "node recorder.mjs",
+    "check": "node --check recorder.mjs"
+  },
+  "dependencies": {
+    "tar": "^7.4.3",
+    "ws": "^8.18.3",
+    "yaml": "^2.8.1"
+  }
+}

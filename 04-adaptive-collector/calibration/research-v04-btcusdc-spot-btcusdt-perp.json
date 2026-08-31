@@ -1,0 +1,36 @@
+{
+  "schema": "adaptive-ob-calibration-v1",
+  "algorithm": "adaptive-ob-v0.4-winner",
+  "calibrationId": "research-v04-btcusdc-btcusdt-20260827T224406Z-20260828T082911Z",
+  "source": "research_v04_bundled",
+  "primaryMarket": "spot",
+  "primarySymbol": "BTCUSDC",
+  "sensorUniverse": {
+    "spotSymbol": "BTCUSDC",
+    "perpSymbol": "BTCUSDT",
+    "orderbookDepth": 50,
+    "fastWindowMs": 1000,
+    "tickMs": 250,
+    "topLevels": 10
+  },
+  "baselines": {
+    "price_range": 1e-9,
+    "tick_travel": 1e-9,
+    "trade_rate": 6.0,
+    "quote_volume": 8114.7227,
+    "book_churn": 230.0,
+    "imbalance_delta": 0.0025057542029752
+  },
+  "event_thresholds": {
+    "price_range_bp": 2.112769704373806,
+    "tick_travel_bp": 2.29473302951895,
+    "trade_rate_s": 306.9100000000035,
+    "quote_volume_s": 1397197.6013522272,
+    "book_churn_s": 1752.9100000000035,
+    "imbalance_delta": 0.927931636390974
+  },
+  "rows": 140419,
+  "start_ms": 1787870646750,
+  "end_ms": 1787905751250,
+  "notes": "Exact research calibration supplied after v0.4 validation. Valid only for BTCUSDC Spot + BTCUSDT Perp sensor universe and the frozen v0.4 winner profile."
+}

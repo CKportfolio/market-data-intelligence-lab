@@ -1,0 +1,48 @@
+=== V0.4 QUALITY-FIRST GATE COUNTS ===
+tier_a_recall                 480 / 480
+tier_b_recall                 480 / 480
+ab_weighted_recall            480 / 480
+tier_a_snapshot_recall        480 / 480
+tier_b_snapshot_recall        256 / 480
+reaction                      480 / 480
+oversampling                  131 / 480
+false_fast                    389 / 480
+reduction                     480 / 480
+
+=== RANGES ===
+tier_a_recall                    1 .. 1
+tier_b_recall                    1 .. 1
+ab_weighted_recall               1 .. 1
+tier_a_snapshot_recall           0.980488 .. 1
+tier_b_snapshot_recall           0.555556 .. 1
+reaction_p95_ms                  0 .. 437.5
+oversampling_p95_ms              2000 .. 30000
+false_fast_time                  0.0260009 .. 0.406509
+snapshot_reduction               0.417319 .. 0.759009
+mid_reconstruction_mae_bp        0.10952 .. 0.387701
+imbalance_reconstruction_mae     0.126183 .. 0.202152
+
+=== TOP 20 CLOSEST TO PASS (QUALITY FIRST) ===
+                                                 variant  gates_passed  tier_a_snapshot_recall  tier_b_snapshot_recall  tier_a_recall  tier_b_recall  ab_weighted_recall  reaction_p95_ms  oversampling_p95_ms  false_fast_time  snapshot_reduction  mid_reconstruction_mae_bp  pass
+asym-sqrt_excess-price_heavy-clean_release-tau1000-g0.95             9                1.000000                0.933333            1.0            1.0                 1.0              0.0               6000.0         0.061551            0.691383                   0.236512  True
+   asym-sqrt_excess-balanced-clean_release-tau1000-g0.75             9                1.000000                0.933333            1.0            1.0                 1.0              0.0               6000.0         0.062220            0.691070                   0.235463  True
+      asym-sqrt_excess-price_heavy-balanced-tau700-g0.95             9                1.000000                0.911111            1.0            1.0                 1.0              0.0               5250.0         0.050329            0.692380                   0.236885  True
+         asym-sqrt_excess-balanced-balanced-tau700-g0.75             9                1.000000                0.911111            1.0            1.0                 1.0              0.0               5250.0         0.051158            0.691611                   0.235916  True
+       asym-sqrt_excess-confluence-balanced-tau700-g0.75             9                1.000000                0.911111            1.0            1.0                 1.0              0.0               5637.5         0.053675            0.686284                   0.231094  True
+asym-sqrt_excess-price_heavy-clean_release-tau1400-g0.55             9                1.000000                0.911111            1.0            1.0                 1.0            250.0               5887.5         0.061028            0.720581                   0.299517  True
+      asym-sqrt_excess-confluence-balanced-tau1000-g0.55             9                1.000000                0.911111            1.0            1.0                 1.0              0.0               6000.0         0.060788            0.697650                   0.247295  True
+     asym-sqrt_excess-price_heavy-balanced-tau1000-g0.75             9                1.000000                0.911111            1.0            1.0                 1.0              0.0               6000.0         0.061304            0.695599                   0.244252  True
+       asym-sqrt_excess-price_heavy-balanced-tau700-g1.2             9                1.000000                0.911111            1.0            1.0                 1.0              0.0               6000.0         0.069995            0.661815                   0.198917  True
+  asym-sqrt_excess-price_heavy-clean_release-tau700-g1.2             9                0.985366                0.911111            1.0            1.0                 1.0              0.0               5637.5         0.052475            0.692408                   0.229784  True
+  asym-sqrt_excess-confluence-clean_release-tau700-g0.95             9                0.985366                0.911111            1.0            1.0                 1.0              0.0               5887.5         0.057529            0.685429                   0.221140  True
+       asym-sqrt_excess-confluence-balanced-tau1000-g1.2             8                1.000000                1.000000            1.0            1.0                 1.0              0.0              12025.0         0.165999            0.571998                   0.145955 False
+    asym-sqrt_excess-balanced-clean_release-tau1400-g1.2             8                1.000000                1.000000            1.0            1.0                 1.0              0.0              12662.5         0.159337            0.587409                   0.152817 False
+  asym-sqrt_excess-confluence-clean_release-tau1400-g1.2             8                1.000000                1.000000            1.0            1.0                 1.0              0.0              13550.0         0.166981            0.578465                   0.148853 False
+    asym-sqrt_excess-balanced-clean_release-tau1900-g1.2             8                1.000000                1.000000            1.0            1.0                 1.0              0.0              19187.5         0.197054            0.562512                   0.140187 False
+ asym-sqrt_excess-confluence-clean_release-tau1900-g0.55             8                1.000000                0.977778            1.0            1.0                 1.0              0.0              10637.5         0.096025            0.677425                   0.227290 False
+asym-sqrt_excess-price_heavy-clean_release-tau1900-g0.75             8                1.000000                0.977778            1.0            1.0                 1.0              0.0              10887.5         0.098069            0.674035                   0.223248 False
+    asym-log_excess-balanced-clean_release-tau1900-g0.95             8                1.000000                0.977778            1.0            1.0                 1.0              0.0              11387.5         0.100593            0.660048                   0.213728 False
+  asym-log_excess-confluence-clean_release-tau1900-g0.95             8                1.000000                0.977778            1.0            1.0                 1.0              0.0              12025.0         0.104302            0.655804                   0.208440 False
+     asym-log_excess-balanced-clean_release-tau1400-g1.2             8                1.000000                0.955556            1.0            1.0                 1.0              0.0               9637.5         0.094280            0.663324                   0.200946 False
+
+NOTE: v0.4 does not maximize snapshot reduction. >=40% is only a minimum gate; winner ranking is quality-first.

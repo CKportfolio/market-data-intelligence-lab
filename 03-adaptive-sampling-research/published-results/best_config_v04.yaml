@@ -1,0 +1,185 @@
+seed: 20260828
+market:
+  primary_category: spot
+  primary_symbol: BTCUSDC
+  book_depth: 50
+replay:
+  tick_ms: 250
+  fast_window_ms: 1000
+  slow_window_ms: 5000
+  reorder_ms: 250
+  top_levels_imbalance: 10
+sampler:
+  snapshot_on_speedup: true
+  max_heat: 8.0
+  interval_map:
+  - name: EXTREME
+    min_heat: 3.05
+    interval_ms: 800
+  - name: ACTIVE
+    min_heat: 1.75
+    interval_ms: 1500
+  - name: NORMAL
+    min_heat: 0.8
+    interval_ms: 2500
+  - name: QUIET
+    min_heat: 0.0
+    interval_ms: 5000
+  heat:
+    tau_ms: 1000
+    quiet_tau_multiplier: 0.34
+    gain: 0.95
+    function: sqrt_excess
+    single_sensor_multiplier: 0.08
+    confluence_bonus: 0.22
+    dead_zone:
+      price: 1.2
+      flow: 1.45
+      book: 1.45
+    shock_event_fraction:
+      price: 0.9
+      flow: 0.9
+      book: 0.9
+    weights:
+      price_range: 0.38
+      tick_travel: 0.22
+      trade_rate: 0.1
+      quote_volume: 0.06
+      book_churn: 0.14
+      imbalance_delta: 0.1
+calibration:
+  baseline_quantile: 0.5
+  positive_only_for_flow: true
+  event_quantile: 0.995
+  floors:
+    price_range_bp: 0.75
+    tick_travel_bp: 1.0
+    trade_rate_s: 40.0
+    quote_volume_s: 50000.0
+    book_churn_s: 250.0
+    imbalance_delta: 0.12
+evaluation:
+  episode_gap_ms: 1500
+  event_context_ms: 1000
+  tier_a_required_interval_ms: 800
+  tier_b_required_interval_ms: 1500
+  tier_c_required_interval_ms: 2500
+  snapshot_grace_ms: 750
+  oversampling_slow_interval_ms: 2500
+  oversampling_stable_ms: 1000
+  oversampling_horizon_ms: 30000
+  tier_weights:
+    A: 2.0
+    B: 1.0
+acceptance:
+  tier_a_recall_min: 0.98
+  tier_b_recall_min: 0.9
+  ab_weighted_recall_min: 0.95
+  tier_a_snapshot_recall_min: 0.98
+  tier_b_snapshot_recall_min: 0.9
+  reaction_p95_ms_max: 750
+  oversampling_p95_ms_max: 6000
+  false_fast_time_max: 0.2
+  snapshot_reduction_min: 0.4
+  preferred_snapshot_reduction: 0.5
+search:
+  tau_ms:
+  - 700
+  - 1000
+  - 1400
+  - 1900
+  - 2600
+  gain:
+  - 0.55
+  - 0.75
+  - 0.95
+  - 1.2
+  transforms:
+  - log_excess
+  - sqrt_excess
+  weight_families:
+    balanced:
+      price_range: 0.3
+      tick_travel: 0.17
+      trade_rate: 0.13
+      quote_volume: 0.09
+      book_churn: 0.18
+      imbalance_delta: 0.13
+    price_heavy:
+      price_range: 0.38
+      tick_travel: 0.22
+      trade_rate: 0.1
+      quote_volume: 0.06
+      book_churn: 0.14
+      imbalance_delta: 0.1
+    confluence:
+      price_range: 0.28
+      tick_travel: 0.16
+      trade_rate: 0.13
+      quote_volume: 0.09
+      book_churn: 0.2
+      imbalance_delta: 0.14
+  response_profiles:
+    responsive:
+      thresholds:
+      - 0.55
+      - 1.3
+      - 2.55
+      dead_zone:
+        price: 1.1
+        flow: 1.25
+        book: 1.25
+      quiet_tau_multiplier: 0.5
+      single_sensor_multiplier: 0.16
+      shock_event_fraction:
+        price: 0.85
+        flow: 0.85
+        book: 0.85
+    balanced:
+      thresholds:
+      - 0.7
+      - 1.55
+      - 2.8
+      dead_zone:
+        price: 1.15
+        flow: 1.35
+        book: 1.35
+      quiet_tau_multiplier: 0.42
+      single_sensor_multiplier: 0.12
+      shock_event_fraction:
+        price: 0.9
+        flow: 0.9
+        book: 0.9
+    clean_release:
+      thresholds:
+      - 0.8
+      - 1.75
+      - 3.05
+      dead_zone:
+        price: 1.2
+        flow: 1.45
+        book: 1.45
+      quiet_tau_multiplier: 0.34
+      single_sensor_multiplier: 0.08
+      shock_event_fraction:
+        price: 0.9
+        flow: 0.9
+        book: 0.9
+    fidelity:
+      thresholds:
+      - 0.6
+      - 1.4
+      - 2.65
+      dead_zone:
+        price: 1.1
+        flow: 1.2
+        book: 1.2
+      quiet_tau_multiplier: 0.46
+      single_sensor_multiplier: 0.14
+      shock_event_fraction:
+        price: 0.8
+        flow: 0.8
+        book: 0.8
+research_status: calibration_winner_pending_holdout
+winner_name: asym-sqrt_excess-price_heavy-clean_release-tau1000-g0.95
+selection_policy: quality_first_reduction_is_minimum_not_maximum

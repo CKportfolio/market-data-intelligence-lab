@@ -1,0 +1,20 @@
+{
+  "name": "market-ml-collector-adaptive",
+  "version": "3.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Bybit BTC raw market-data collector with validated v0.4 adaptive orderbook sampling and exact bundled research calibration",
+  "engines": {
+    "node": ">=18.18"
+  },
+  "scripts": {
+    "start": "node collector.mjs",
+    "validate": "node validate.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "check": "node --check collector.mjs && node --check validate.mjs && node --check lib/adaptive-sampler.mjs && node --check tools/import-calibration.mjs",
+    "import-calibration": "node tools/import-calibration.mjs"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  }
+}

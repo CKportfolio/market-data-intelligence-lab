@@ -1,0 +1,21 @@
+output_dir: ./data/dense/live
+segment_minutes: 15
+chunk_raw_mib: 4
+heartbeat_ms: 20000
+reconnect_ms: 2000
+
+streams:
+  - category: spot
+    symbol: BTCUSDC
+    websocket: wss://stream.bybit.com/v5/public/spot
+    topics:
+      - orderbook.50.BTCUSDC
+      - publicTrade.BTCUSDC
+
+  - category: linear
+    symbol: BTCUSDT
+    websocket: wss://stream.bybit.com/v5/public/linear
+    topics:
+      - orderbook.50.BTCUSDT
+      - publicTrade.BTCUSDT
+      - allLiquidation.BTCUSDT
