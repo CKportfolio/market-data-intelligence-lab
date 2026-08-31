@@ -1,61 +1,47 @@
 # Market Data Intelligence Lab
 
-**Od prostego grid bota do infrastruktury badawczej dla osobnego krótkoterminowego bota sygnałowego.**
+Repozytorium dokumentuje rozwój systemu od prostego collectora danych rynkowych do eksperymentalnego pipeline'u machine learning przygotowanego pod przyszłego bota sygnałowego.
 
-Punktem wyjścia nie było „zróbmy ML”. Punktem wyjścia były próby uczynienia grid bota coraz bardziej „przebiegłym” przez dokładanie kolejnych sygnałów rynkowych. W praktyce zwiększało to złożoność infrastruktury, ale nie dawało proporcjonalnej korzyści.
+Projekt powstał jako kolejny etap prac nad [BOT_EU](https://github.com/CKportfolio/BOT_EU).
 
-Zamiast dalej komplikować grid, rozdzieliłem problem na dwa systemy:
+W grid bocie testowane były kolejne mechanizmy mające uczynić strategię bardziej „świadomą rynku”. W praktyce dokładanie następnych warstw informacji zwiększało głównie złożoność systemu, bez przekonującego dowodu, że daje proporcjonalną poprawę działania samego gridu.
 
-- **grid bot** pozostaje prostszą strategią o własnej logice,
-- **predykcja krótkoterminowa** staje się osobnym kierunkiem R&D dla przyszłego bota sygnałowego.
+Z tego powstała decyzja:
 
-Główne pytanie badawcze brzmi:
+> **nie komplikować dalej strategii gridowej, tylko oddzielić od niej problem predykcji.**
 
-> **Czy mikrostruktura orderbooka i inne dane rynkowe bezpośrednio przed potwierdzeniem formacji mogą dostarczać sygnału pozwalającego ocenić krótkoterminowe wejście?**
+Nowym celem stał się osobny bot sygnałowy, który w przyszłości mógłby wykorzystywać model ML do rozpoznawania sytuacji pojawiającej się bezpośrednio przed potwierdzeniem krótkoterminowej formacji cenowej.
 
-Żeby to w ogóle sprawdzić, potrzebowałem własnego datasetu o odpowiedniej rozdzielczości. Stąd powstał cały ciąg:
+Żeby taki pomysł można było w ogóle zbadać, najpierw potrzebne były odpowiednie dane.
+
+---
+
+## Co właściwie zbieramy?
+
+Oprócz zwykłych danych o cenie projekt zapisuje także **orderbook**.
+
+Orderbook można najprościej wyobrazić sobie jako bieżącą listę:
+
+- „chcę kupić po tej cenie”,
+- „chcę sprzedać po tej cenie”.
+
+Na giełdzie takich zleceń są tysiące i cały czas się zmieniają.
+
+Przykład:
 
 ```text
-stały collector 1 s
-→ dense recorder
-→ adaptive sampling research
-→ walidacja 480 polityk
-→ adaptive collector
-→ streaming ML research
-→ badanie predyktora formacji
-→ przyszły signal bot
-```
+SPRZEDAŻ
 
-## Wynik adaptacyjnego collectora
+101.00   2.1 BTC
+100.90   0.8 BTC
+100.80   1.4 BTC
 
-Na chronologicznym holdoucie:
+----------------
+aktualna cena
+----------------
 
-- **72,73% mniej** pełnych snapshotów L50 względem baseline 1 s,
-- **100%** Tier A event recall,
-- **100%** Tier B event recall,
-- **100%** Tier A snapshot recall,
-- **94,44%** Tier B snapshot recall,
-- reaction p95: **250 ms**,
-- **9/9** bramek jakości zaliczonych.
+100.70   1.8 BTC
+100.60   3.2 BTC
+100.50   0.6 BTC
 
-To wynik jednego zamrożonego okresu rynku, więc nie jest przedstawiany jako uniwersalna gwarancja dla wszystkich reżimów.
-
-## Co jest ML, a co nim nie jest
-
-Adaptive sampler **nie jest modelem ML**. To deterministyczna polityka wybrana eksperymentalnie na danych kalibracyjnych i sprawdzona na chronologicznym holdoucie.
-
-Warstwa ML znajduje się w `05-ml-research-engine` i obejmuje m.in.:
-
-- HistGradientBoostingClassifier,
-- kalibrację prawdopodobieństw,
-- regresję MFE/MAE,
-- walk-forward validation,
-- embargo względem horyzontu labela,
-- untouched holdout,
-- Brier score / log loss / ROC AUC / Average Precision,
-- permutation importance,
-- porównanie `historical_backfillable_only` vs `full_microstructure`.
-
-Repo **nie twierdzi**, że istnieje już dochodowy predyktor ani gotowy live signal bot. Pokazuje natomiast pełną drogę badawczą: od problemu architektonicznego, przez własne dane i eksperyment, aż po infrastrukturę potrzebną do uczciwego testowania hipotezy ML.
-
-Pełna wersja README: [README.md](README.md).
+KUPNO
