@@ -8,6 +8,7 @@ import pandas as pd
 from src.candidates import confirmed_pivots, detect_candidates
 from src.labels import label_candidates, target_name
 from src.validation import walk_forward_folds
+from src.modeling import fit_final_bundle
 
 class CoreTests(unittest.TestCase):
     def test_pivot_is_not_backdated(self):
@@ -24,6 +25,31 @@ class CoreTests(unittest.TestCase):
         t={"tp_bps":50,"sl_bps":25,"horizon_min":10}
         out=label_candidates(c,df,[t])
         self.assertTrue(pd.isna(out.iloc[0][f"y_{target_name(t)}"]))
+
+
+    def test_model_drops_constant_features_per_training_fold(self):
+        n = 120
+        df = pd.DataFrame({
+            "signal_ms": np.arange(n) * 60000,
+            "varying": np.sin(np.arange(n) / 7.0),
+            "constant": np.ones(n),
+            "all_nan": np.full(n, np.nan),
+            "y_test": np.arange(n) % 2,
+        })
+        params = {
+            "learning_rate": 0.05,
+            "max_iter": 40,
+            "max_leaf_nodes": 15,
+            "min_samples_leaf": 10,
+            "l2_regularization": 1.0,
+        }
+        bundle = fit_final_bundle(
+            df, ["varying", "constant", "all_nan"], "y_test", params, {}
+        )
+        self.assertEqual(bundle.feature_cols, ["varying"])
+        p = bundle.predict_proba_success(df.iloc[-10:])
+        self.assertEqual(len(p), 10)
+        self.assertTrue(np.isfinite(p).all())
 
     def test_walk_forward_has_embargo(self):
         df=pd.DataFrame({"signal_ms":np.arange(200)*60000})

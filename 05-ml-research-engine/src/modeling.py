@@ -36,21 +36,43 @@ def make_classifier(params: dict):
     )
 
 
+def _usable_feature_cols(frame: pd.DataFrame, features: list[str]) -> list[str]:
+    """Keep only features that contain at least two distinct finite values.
+
+    HistGradientBoosting can fail during binning when a walk-forward fold contains
+    a feature that is entirely missing or constant in that fold.  This can happen
+    even when the feature varies in the full dataset.  Feature eligibility is
+    therefore evaluated on the actual fit partition, not globally.
+    """
+    usable = []
+    for col in features:
+        if col not in frame.columns:
+            continue
+        numeric = pd.to_numeric(frame[col], errors="coerce")
+        finite = numeric[np.isfinite(numeric.to_numpy(dtype=float, na_value=np.nan))]
+        if finite.nunique(dropna=True) >= 2:
+            usable.append(col)
+    if not usable:
+        raise ValueError("No usable non-constant features in this training fold")
+    return usable
+
+
 def _fit_with_calibration(train: pd.DataFrame, features: list[str], ycol: str, params: dict) -> CalibratedBundle:
     d = train.sort_values("signal_ms").reset_index(drop=True)
     split = max(10, int(len(d) * 0.85))
     fit = d.iloc[:split]
     cal = d.iloc[split:]
     yfit = fit[ycol].astype(int)
+    fit_features = _usable_feature_cols(fit, features)
     model = make_classifier(params)
     sw = compute_sample_weight("balanced", yfit) if yfit.nunique() > 1 else None
-    model.fit(fit[features], yfit, sample_weight=sw)
+    model.fit(fit[fit_features], yfit, sample_weight=sw)
     calibrator = None
     if len(cal) >= 20 and cal[ycol].nunique() > 1:
-        raw = model.predict_proba(cal[features])[:, 1]
+        raw = model.predict_proba(cal[fit_features])[:, 1]
         calibrator = LogisticRegression(C=1.0, solver="lbfgs")
         calibrator.fit(raw.reshape(-1, 1), cal[ycol].astype(int))
-    return CalibratedBundle(model, calibrator, features, ycol, {})
+    return CalibratedBundle(model, calibrator, fit_features, ycol, {})
 
 
 def binary_metrics(y: np.ndarray, p: np.ndarray) -> dict:
