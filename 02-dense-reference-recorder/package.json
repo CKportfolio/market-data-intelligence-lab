@@ -7,7 +7,7 @@
     "check": "node --check recorder.mjs"
   },
   "dependencies": {
-    "tar": "^7.4.3",
+    "tar": "^7.5.23",
     "ws": "^8.18.3",
     "yaml": "^2.8.1"
   }
